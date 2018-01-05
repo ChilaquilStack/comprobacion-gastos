@@ -8,5 +8,6 @@ mix.scripts([
 ], 'public/js/script.js')
 .styles([
 	'resources/assets/css/bootstrap.min.css',
-	'resources/assets/css/bootstrap-theme.min.css'
+	'resources/assets/css/bootstrap-theme.min.css',
+	'resources/assets/css/app.css'
 ], 'public/css/style.css');
