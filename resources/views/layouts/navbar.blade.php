@@ -23,9 +23,9 @@
                 <li><a href="#" tabindex="-1">Unidad Presupuestas</a></li>
                 <li><a href="#" tabindex="-1">Unidad Responsable</a></li>
                 <li><a href="#" tabindex="-1">Unidad Ejecutora del Gasto</a></li>
-                <li><a href="#" tabindex="-1">Municipios</a></li>
-                <li><a href="#" tabindex="-1">Regiones</a></li>
-                <li><a href="#" tabindex="-1">Escuelas</a></li>
+                <li><a href="{{route('municipio.index')}}" tabindex="-1">Municipios</a></li>
+                <li><a href="{{route('region.index')}}" tabindex="-1">Regiones</a></li>
+                <li><a href="{{route('escuela.index')}}" tabindex="-1">Escuelas</a></li>
               </ul>
             </li>
             <li><a href="#">Tipo de Programa General</a></li>
