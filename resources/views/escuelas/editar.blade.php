@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Agregar Escuela</h4>
+                <h4 class="modal-title">Editar Unidad Operadora del Gasto</h4>
             </div>
             <div class="modal-body">
                 {{Form::open(["class" => "form-horizontal", "role"=>"form"])}}
@@ -12,9 +12,9 @@
 
                     {{Form::label("region","Region",["class"=>"control-label"])}}
                     
-                    <select class="form-control" v-model="old_escuela.regiones_id">
-                        <option v-for="region in regiones" :value="region.id">
-                            @{{region.nombre}}
+                    <select class="form-control" v-model="old_escuela.municipios_id">
+                        <option v-for="municipio in municipios" :value="municipio.id">
+                            @{{municipio.nombre}}
                         </option>
                     </select>
 

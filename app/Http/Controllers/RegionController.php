@@ -67,9 +67,6 @@ class RegionController extends Controller {
 
     public function regiones() {
         $regiones = Region::orderBy('id', 'desc')->paginate(10);
-        foreach ($regiones as $region) {
-            $region->municipio;
-        }
         $response = [
             'pagination' => [
                 'total' => $regiones->total(),

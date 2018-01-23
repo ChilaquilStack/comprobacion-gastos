@@ -35,12 +35,7 @@ class MunicipioController extends Controller {
         return response()->json("Se actualizo con exito el municipio", 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Municipio  $municipio
-     * @return \Illuminate\Http\Response
-     */
+    
     public function destroy(Municipio $municipio){
         $municipio->delete();
         return response()->json("Se elimino con exito", 200);
@@ -48,6 +43,9 @@ class MunicipioController extends Controller {
 
     public function municipios(Request $request){
         $municipios = Municipio::orderBy('id', 'desc')->paginate(10);
+        foreach ($municipios as $municipio) {
+            $municipio->region;
+        }
         $response = [
             'pagination' => [
                 'total' => $municipios->total(),

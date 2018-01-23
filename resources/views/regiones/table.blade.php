@@ -3,7 +3,6 @@
 		<tr>
 			<th>#</th>
 			<th>Region</th>
-			<th>Municipio</th>
 		</tr>
 	</thead>
 	<tbody class="well well-sm">
@@ -16,14 +15,11 @@
 				@{{region.nombre}}
 			</td>
 			<td>
-				@{{region.municipio.nombre}}
-			</td>
-			<td>
 				<div class="btn-group btn-group-sm " role="group">
-					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Region"@click="editar_region(region)">
+					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Region"@click="editar_region(region)">Editar
 						<i class="fa fa-pencil" aria-hidden="true"></i>
 					</button>
-					<button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar Region" @click="eliminar_region(region)">
+					<button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Eliminar Region" @click="eliminar_region(region)">Baja
 						<i class="fa fa-trash" aria-hidden="true"></i>
 					</button>
 				</div>

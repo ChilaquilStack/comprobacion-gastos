@@ -4,14 +4,11 @@ var CRUD_regiones = new Vue({
 	el: "#regiones",
 	created: function() {
 		this.obtener_regiones(this.pagination.current_page);
-		this.obtener_municipios();
 	},
 	data: {
-		old_region: {id: '', nombre: '', municipios_id: ''},
-		new_region: {nombre: "", municipios_id: ""},
-		region_municipio: "",
+		old_region: {id: '', nombre: ''},
+		region: {nombre: ""},
 		regiones: [],
-		municipios: [],
 		pagination: {
 			total: 0, 
 			per_page: 2,
@@ -48,43 +45,24 @@ var CRUD_regiones = new Vue({
     },
 	methods: {
 		
-		obtener_municipios: function(){
-			let url = 'municipio/municipios_all';
-			axios.get(url)
-			.then(response => {
-				this.municipios = response.data;
-			}).catch(error => {
-				console.info(error);
-			});
-		},
-
 		mostrar_formulario_agregar_region: function(){
 			$("#agregar_region").modal();
 		},
 
 		agregar_region: function() {
-			if(this.new_region.nombre != '' && this.new_region.municipios_id != ""){
+			if(this.region.nombre != ''){
 				let url = 'region';
-				axios({
-					url: url,
-					method: 'post',
-					data: {
-						nombre: this.new_region.nombre,
-						municipios_id: this.new_region.municipios_id
-					}
-				}).then(response => {
+				axios.post(url, this.region).then(response => {
 					this.modal_success(response.data);
 					this.obtener_regiones();
-					this.region = "";
+					this.region.nombre = "";
+					$("#agregar_region").modal('hide');
 				}).catch(error => {
 					console.log("Error");
 				});
-				$("#agregar_region").modal('hide');
 			} else {
 				if(this.new_region.nombre == ''){
 					this.modal_info("Ingrese el nombre de la region");
-				} else {
-					this.modal_info("Ingrese el municipio al que pertenece la region");
 				}
 			}
 		},
@@ -132,14 +110,13 @@ var CRUD_regiones = new Vue({
 		editar_region: function(region) {
 			this.old_region.id = region.id
 			this.old_region.nombre = region.nombre;
-			this.old_region.municipios_id = region.municipio.id;
 			$("#editar_region").modal();
 		},
 
 		actualizar_region: function(region){
 			if(region.nombre != ''){
 				let url = 'region/' + region.id;
-				axios.put(url, {'nombre': region.nombre, 'municipios_id': region.municipios_id})
+				axios.put(url, this.old_region)
 					.then(response => {
 						this.obtener_regiones(this.pagination.current_page);
 						$("#editar_region").modal('hide');
@@ -148,14 +125,11 @@ var CRUD_regiones = new Vue({
 					.catch(error => {
 						console.log(error.response);
 				});
-			} else {
-				this.modal_info("Alerta", "Porfavor ingrese el nombre del municipio");
 			}
 		},
 
 		changePage: function (page) {
 			this.pagination.current_page = page;
-			this.obtener_municipios(page);
       	},
 
 		modal_success: function(title) {
@@ -209,8 +183,7 @@ var CRUD_regiones = new Vue({
 				reverseButtons: true
 			}).then((result) => {
 				if (result.value) {
-					this.modal_success("Eliminado", "Municipio Eliminado");
-					this.municipios.splice(index, 1);
+					this.modal_success("Eliminado");
 				} else if (result.dismiss === 'cancel') {
 					this.modal_error("Cancelado", "No se a eliminado")
 				}

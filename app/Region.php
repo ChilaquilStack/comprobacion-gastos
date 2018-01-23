@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Region extends Model {
 	
 	private $primariKey = 'id';
-	protected $fillable = ['nombre','municipios_id'];
+	protected $fillable = ['nombre'];
     protected $table = 'regiones';
     public $timestamps = false;
 
-    public function municipio(){
-    	return $this->belongsTo('App\Municipio', 'municipios_id');
+    public function municipios() {
+    	return $this->hasManyTo('App\Municipio', 'regiones_id', 'id');
     }
 }

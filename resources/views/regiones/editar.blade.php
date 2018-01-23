@@ -9,14 +9,11 @@
             </div>
             <div class="modal-body">
                 {{Form::open(["class" => "form-horizontal", "role"=>"form"])}}
+                    
                     {{Form::label("nombre","Nombre",["class"=>"control-label"])}}
                     {{Form::text("nombre","",["class" => "form-control", "v-model" => "old_region.nombre", "autofocus"])}}
-                    {{Form::label("region","Region",["class"=>"control-label"])}}
-                    <select class="form-control" v-model="old_region.municipios_id">
-                        <option v-for="municipio in municipios" :value="municipio.id">
-                            @{{municipio.nombre}}
-                        </option>
-                    </select>
+                    
+
                 {{Form::close()}}
             </div>
             <div class="modal-footer">

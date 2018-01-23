@@ -1,18 +1,18 @@
 "use strict";
 Vue.config.devtools = true
-
 var CRUD_escuelas = new Vue({
 	el: "#escuelas",
 	created: function() {
 		this.obtener_escuelas(this.pagination.current_page);
-		this.obtener_regiones();
+		this.obtener_municipios();
+		this.obtener_uegs();
 	},
 	data: {
-		old_escuela: {id: '', nombre:'', regiones_id: ''},
-		new_escuela: {nombre: '', regiones_id: ''},
+		old_escuela: {id: '', nombre:'', municipios_id: '', ueg_id: ''},
+		new_escuela: {nombre: '', municipios_id: '', ueg_id: ''},
 		escuelas: [],
 		municipios: [],
-		regiones: [],
+		uegs: [],
 		pagination: {
 			total: 0, 
 			per_page: 2,
@@ -21,6 +21,7 @@ var CRUD_escuelas = new Vue({
 			current_page: 1
 		},
 		offset: 5,
+		escuela: ''
 	},
 	computed: {
 		isActived: function () {
@@ -45,6 +46,9 @@ var CRUD_escuelas = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+        searchEscuela: function() {
+        	return this.escuelas.filter((escuela) => escuela.nombre.includes(this.escuela));
         }
     },
 	methods: {
@@ -53,13 +57,15 @@ var CRUD_escuelas = new Vue({
 		},
 		
 		agregar_escuela: function() {
-			if(this.new_escuela.nombre != "" && this.new_escuela.regiones_id != ''){
+			if(this.new_escuela.nombre != "" && this.new_escuela.municipios_id != '') {
 				let url = 'escuela';
 				axios.post(url, this.new_escuela)
 				.then(response =>{
 					this.modal_success(response.data);
 					this.obtener_escuelas();
-					this.escuela = "",
+					this.new_escuela.nombre = "",
+					this.new_escuela.municipios_id = "",
+					this.new_escuela.ueg_id = "",
 					$("#agregar_escuela").modal('hide');
 				}).catch(error => {
 					this.modal_error("Error", error);
@@ -68,7 +74,7 @@ var CRUD_escuelas = new Vue({
 				if(this.new_escuela.nombre == ""){
 					this.modal_info("Porfavor ingrese el nombre de la escuela");
 				} else {
-					this.modal_info("Porfavor seleccione la region a la que pertenece la escuela");
+					this.modal_info("Porfavor seleccione el municipio a la que pertenece la Unidad Operadora del Gasto");
 				}
 			}
 		},
@@ -92,13 +98,13 @@ var CRUD_escuelas = new Vue({
 					let url = 'escuela/' + municipio.id;
 					axios.delete(url)
 					.then(response => {		
-						this.modal_success("Eliminado", "Escuela Eliminada");
-						this.obtener_municipios(this.pagination.current_page);
+						this.modal_success(response.data);
+						this.obtener_escuelas(this.pagination.current_page);
 					}).catch(error => {
 						console.log("Error")
 					});
 				} else if (result.dismiss === 'cancel') {
-					this.modal_error("Cancelado", "No se a eliminado")
+					this.modal_error("Operacion cancelada")
 				}
 			})
 		},
@@ -117,7 +123,7 @@ var CRUD_escuelas = new Vue({
 		editar_escuela: function(escuela) {
 			this.old_escuela.id = escuela.id
 			this.old_escuela.nombre = escuela.nombre;
-			this.old_escuela.regiones_id = escuela.region.id;
+			this.old_escuela.municipios_id = escuela.municipios_id;
 			$("#editar_escuela").modal();
 		},
 
@@ -137,15 +143,24 @@ var CRUD_escuelas = new Vue({
 				this.modal_info("Alerta", "Porfavor ingrese el nombre del municipio");
 			}
 		},
-		obtener_regiones: function(page) {
-			let url = 'region/regiones_all';
+		
+		obtener_municipios: function() {
+			let url = 'municipio/municipios_all';
 			axios.get(url)
 			.then(response => {
-				this.regiones = response.data;
+				this.municipios = response.data;
 			}).catch(error => {
 				console.info(error);
 			});
 		},
+
+		obtener_uegs: function(){
+			let url = 'ueg/uegs_all';
+			axios.get(url).then(response => {
+				this.uegs = response.data;
+			}).catch(error => console.log("Error"));
+		},
+
 		changePage: function (page) {
 			this.pagination.current_page = page;
 			this.obtener_municipios(page);
@@ -162,10 +177,9 @@ var CRUD_escuelas = new Vue({
 			})
 		},
 
-		modal_error: function(title, text){
+		modal_error: function(title){
 			swal({
 				title: title,
-				text:  text,
 				type: 'error',
 				showCloseButton: false,
 				showConfirmButton: false,

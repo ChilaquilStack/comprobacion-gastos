@@ -10,11 +10,11 @@
 </head>
 <body>
 	@include('layouts.navbar')
-	<div class="container" id="app">
+	<div class="container">
 		@yield('content')
 	</div>
 	{{Html::script('https://use.fontawesome.com/48bcad2f1a.js')}}
-	{{Html::script('js/script.js')}}
+	{{Html::script('js/app.js')}}
 	<script>
       $(document).ready(function(){
         $('.dropdown-submenu a.test').on("click", function(e){

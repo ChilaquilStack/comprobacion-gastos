@@ -1,4 +1,4 @@
-<nav aria-label="Page navigation">
+<nav aria-label="Page navigation" v-if="pagination.total > offset">
   <ul class="pagination">
     <li v-if="pagination.current_page">
       <a href="#" aria-label="Previous" @click.prevent="changePage(pagination.current_page - 1)">

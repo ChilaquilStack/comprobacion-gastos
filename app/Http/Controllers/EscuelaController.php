@@ -35,7 +35,7 @@ class EscuelaController extends Controller
     public function store(Request $request)
     {
         Escuela::create($request->all());
-        return response()->json("Escuela creada con exito", 200);
+        return response()->json("Unidad Operadora del Gasto creada con exito", 200);
     }
 
     /**
@@ -70,7 +70,7 @@ class EscuelaController extends Controller
     public function update(Request $request, Escuela $escuela)
     {
         $escuela->update($request->all());
-        return response()->json("La escuela se actualizo con exito");
+        return response()->json("Unidad Operadora del Gasto actualizada con exito");
     }
 
     /**
@@ -79,15 +79,18 @@ class EscuelaController extends Controller
      * @param  \App\Escuela  $escuela
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Escuela $escuela)
-    {
-        //
+    public function destroy(Escuela $escuela){
+        $escuela->delete();
+        return response()->json("Unidad Operadora del Gasto dada de baja con exito", 200);
     }
 
     public function escuelas(){
         $escuelas = Escuela::orderBy('id', 'asc')->paginate(10);
         foreach($escuelas as $escuela) {
-            $escuela->region->municipio;
+            $escuela->municipio->region;
+            $escuela->ueg;
+            $escuela->ueg->ur;
+            $escuela->ueg->ur->up;
         }
         $response = [
             'pagination' => [
