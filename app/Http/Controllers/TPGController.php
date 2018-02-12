@@ -8,6 +8,10 @@ use Illuminate\Http\Request;
 
 class TPGController extends Controller {
 
+    public function __construct(){
+        $this->middleware('auth');
+    }
+    
     public function index() {
         return view('tpg.index');
     }
@@ -36,9 +40,9 @@ class TPGController extends Controller {
     }
 
     
-    public function update(Request $request, tpg $tpg) {
+    public function update(Request $request, Tpg $tpg) {
         $tpg->update($request->all());
-        return response()->json("Exito", 200);
+        return response()->json("Se actualizo con exito el Tipo de Programa General", 200);
     }
 
     public function destroy(Tpg $tpg) {

@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Up;
 use Illuminate\Http\Request;
-use App\Http\Requests\UPRequest;
+use App\Http\Requests\UPRequestStore;
+use App\Http\Requests\UPRequestUpdate;
 
 class UPController extends Controller {
+    
+    public function __construct(){
+        $this->middleware('auth');
+    }
     
     public function index() {
         return view('up.index');
@@ -16,7 +21,7 @@ class UPController extends Controller {
         //
     }
 
-    public function store(UPRequest $request) {
+    public function store(UPRequestStore $request) {
         up::create($request->all());
         return response()->json('Unidad Presupuestal creada con exito', 200);
     }
@@ -29,7 +34,7 @@ class UPController extends Controller {
         
     }
 
-    public function update(Request $request, Up $up) {
+    public function update(UPRequestUpdate $request, Up $up) {
         $up->update($request->all());
         return response()->json("Unidad Presupuestal actualizada con exito", 200);
     }
@@ -41,7 +46,7 @@ class UPController extends Controller {
     }
 
     public function ups() {
-        $ups = UP::where('estatus', 1)->paginate(10);
+        $ups = UP::where('estatus', 1)->paginate(5);
         $response = [
             'pagination' => [
                 'total' => $ups->total(),
@@ -59,5 +64,9 @@ class UPController extends Controller {
     public function ups_all(){
         $ups = UP::where('estatus', 1)->get();
         return response()->json($ups,200);
+    }
+
+    public function buscar(request $request){
+        return response()->json(UP::buscar($request['clave']), 200);
     }
 }

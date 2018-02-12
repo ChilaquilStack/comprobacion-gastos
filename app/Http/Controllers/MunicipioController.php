@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use DB;
 
 class MunicipioController extends Controller {
+
+    public function __construct(){
+        $this->middleware('auth');
+    }
+
     public function index() {
         return view("municipios.index");
     }
@@ -38,11 +43,11 @@ class MunicipioController extends Controller {
     
     public function destroy(Municipio $municipio){
         $municipio->delete();
-        return response()->json("Se elimino con exito", 200);
+        return response()->json("Se dio de baja el municipio con exito", 200);
     }
 
     public function municipios(Request $request){
-        $municipios = Municipio::orderBy('id', 'desc')->paginate(10);
+        $municipios = Municipio::orderBy('id', 'desc')->paginate(5);
         foreach ($municipios as $municipio) {
             $municipio->region;
         }
@@ -62,5 +67,9 @@ class MunicipioController extends Controller {
 
     public function municipios_all(){
         return response()->json(Municipio::all(),200);
+    }
+
+    public function buscar(request $request){
+        return response()->json(Municipio::buscar($request['nombre']), 200);
     }
 }

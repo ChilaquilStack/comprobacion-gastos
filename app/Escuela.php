@@ -8,7 +8,7 @@ class Escuela extends Model{
     
     private $primariKey = 'id';
 	protected $fillable = ['nombre', 'municipios_id', 'ueg_id'];
-    protected $table = 'escuelas';
+    protected $table = 'uog';
     public $timestamps = false;
 
     public function municipio(){

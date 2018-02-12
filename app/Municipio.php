@@ -18,4 +18,17 @@ class Municipio extends Model {
     	return $this->hasManyTo('App\Escuela');
     }
 
+    public function scopeBuscar($query, $nombre){
+        if(trim($nombre) != ''){
+            return $query->where([
+                ['estatus', 1],
+                ['nombre', 'like', "%$nombre%"],
+            ])->get();     
+        }
+    }
+
+    public function scopeActivos($query){
+        return $query->where('estatus', 1)->orderBy('id', 'asc')->paginate(5);
+    }
+
 }

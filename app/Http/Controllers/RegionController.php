@@ -8,6 +8,10 @@ use DB;
 
 class RegionController extends Controller {
 
+    public function __construct(){
+        $this->middleware('auth');
+    }
+    
     public function index(){
         return view('regiones.index');
     }
@@ -66,7 +70,7 @@ class RegionController extends Controller {
     }
 
     public function regiones() {
-        $regiones = Region::orderBy('id', 'desc')->paginate(10);
+        $regiones = Region::orderBy('id', 'desc')->paginate(5);
         $response = [
             'pagination' => [
                 'total' => $regiones->total(),
@@ -84,5 +88,9 @@ class RegionController extends Controller {
     public function regiones_all() {
         $regiones = Region::all();
         return response()->json($regiones, 200);
+    }
+
+    public function buscar(request $request){
+        return response()->json(Region::buscar($request['nombre']), 200);
     }
 }

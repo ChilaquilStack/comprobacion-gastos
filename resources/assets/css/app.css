@@ -6,3 +6,7 @@
 	left: 100%;
 	margin-top: -1px;
 }
+
+th, td {
+	text-align: center;
+}

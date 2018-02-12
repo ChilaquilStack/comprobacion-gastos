@@ -12,14 +12,14 @@ class UEGRequest extends FormRequest
 
     public function rules () {
         return [
-            'id' => 'required|unique:ueg,id'
+            'clave' => 'required|unique:ueg,id'
         ];
     }
 
     public function messages () {
         return [
-            'id.required' => 'La clave es requerida',
-            'id.unique' => 'La clave ya existe'
+            'clave.required' => 'La clave es requerida',
+            'clave.unique' => 'La clave ya existe'
         ];
     }
 }

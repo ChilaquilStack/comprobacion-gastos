@@ -5,22 +5,17 @@ namespace App\Http\Controllers;
 use App\Escuela;
 use Illuminate\Http\Request;
 
-class EscuelaController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index() {
-        return view('escuelas.index');
+class EscuelaController extends Controller {
+
+    public function __construct(){
+        $this->middleware('auth');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function index() {
+        return view('uog.index');
+    }
+
+    
     public function create()
     {
         //
@@ -85,7 +80,7 @@ class EscuelaController extends Controller
     }
 
     public function escuelas(){
-        $escuelas = Escuela::orderBy('id', 'asc')->paginate(10);
+        $escuelas = Escuela::orderBy('id', 'asc')->paginate(5);
         foreach($escuelas as $escuela) {
             $escuela->municipio->region;
             $escuela->ueg;

@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Ur;
 use Illuminate\Http\Request;
-use App\Http\Requests\URRequest;
+use App\Http\Requests\URRequestStore;
+use App\Http\Requests\URRequestUpdate;
 
 class URController extends Controller {
+    
+    public function __construct(){
+        $this->middleware('auth');
+    }
     
     public function index() {
         return view('ur.index');
@@ -17,9 +22,9 @@ class URController extends Controller {
         //
     }
 
-    public function store(URRequest $request) {
+    public function store(URRequestStore $request) {
         UR::create($request->all());
-        return response()->json("Unudad Responsable creada con exito", 200);
+        return response()->json("Unidad Responsable creada con exito", 200);
     }
 
     
@@ -35,7 +40,7 @@ class URController extends Controller {
     }
 
     
-    public function update(Request $request, Ur $ur) {
+    public function update(URRequestUpdate $request, Ur $ur) {
         $ur->update($request->all());
         return response()->json("Unidad Responsable actualizada con exito", 200);
     }
@@ -48,7 +53,10 @@ class URController extends Controller {
     }
 
     public function urs(){
-        $urs = UR::where('estatus', 1)->paginate(10);
+        $urs = UR::activos();
+        foreach ($urs as $ur) {
+            $ur->up;
+        }
         $response = [
             'pagination' => [
                 'total' => $urs->total(),
@@ -66,5 +74,9 @@ class URController extends Controller {
     public function urs_all(){
         $urs = UR::where('estatus', 1)->get();
         return response()->json($urs, 200);
+    }
+
+    public function buscar(request $request){
+        return response()->json(Credito::buscar($request['folio']), 200);
     }
 }

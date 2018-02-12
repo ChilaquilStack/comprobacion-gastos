@@ -14,4 +14,17 @@ class Region extends Model {
     public function municipios() {
     	return $this->hasManyTo('App\Municipio', 'regiones_id', 'id');
     }
+
+   public function scopeBuscar($query, $nombre){
+        if(trim($nombre) != ''){
+            return $query->where([
+                ['estatus', 1],
+                ['nombre', 'like', "%$nombre%"],
+            ])->get();     
+        }
+    }
+
+    public function scopeActivos($query){
+        return $query->where('estatus', 1)->orderBy('folio', 'asc')->paginate(5);
+    }
 }
