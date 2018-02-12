@@ -1,4 +1,4 @@
-<table class="table table-hover table-condensed">
+<table class="table table-hover table-condensed" v-if='searchEscuela.length > 0'>
 	<thead>
 		<tr>
 			<th>#</th>
@@ -13,27 +13,13 @@
 	<tbody class="well well-sm">
 			
 		<tr v-for="escuela in searchEscuela">
-			<td>
-				@{{escuela.id}}
-			</td>
-			<td>
-				@{{escuela.nombre}}
-			</td>
-			<td>
-				@{{escuela.municipio.nombre}}
-			</td>
-			<td>
-				@{{escuela.municipio.region.nombre}}
-			</td>
-			<td>
-				@{{escuela.ueg.id}}
-			</td>
-			<td>
-				@{{escuela.ueg.ur.id}}
-			</td>
-			<td>
-				@{{escuela.ueg.ur.up.id}}
-			</td>
+			<td>@{{escuela.id}}</td>
+			<td>@{{escuela.nombre}}</td>
+			<td>@{{escuela.municipio.nombre}}</td>
+			<td>@{{escuela.municipio.region.nombre}}</td>
+			<td>@{{escuela.ueg.id}}</td>
+			<td>@{{escuela.ueg.ur.id}}</td>
+			<td>@{{escuela.ueg.ur.up.id}}</td>
 			<td>
 				<div class="btn-group btn-group-sm " role="group">
 					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Escuela"@click="editar_escuela(escuela)">Editar

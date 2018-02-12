@@ -9,12 +9,12 @@
 			<button class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Agregar Unidad Ejecutora del Gasto" @click="mostrar_formulario_agregar_ueg">
 				<i class="fa fa-plus"></i>
 			</button>
+			<input type="text" v-model="buscar_ueg" placeholder="Buscar..." class="form-control">
 		</h1>
-		<div class="row">
-			<div class="col-lg-12">
-				@include('ueg.table')
-			</div>
+		<div class="jumbotron alert alert-warning" v-if='uegs.length == 0'>
+			<p>Aun no existen Unidades Operadoras del Gasto</p>
 		</div>
+		@include('ueg.table')
 	</div>
 </div>
 @endsection

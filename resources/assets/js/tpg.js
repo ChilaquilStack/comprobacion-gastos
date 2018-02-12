@@ -1,4 +1,5 @@
 var up = new Vue({
+
 	'el': '#tpg',
 
 	'created': function() {
@@ -6,6 +7,7 @@ var up = new Vue({
 	},
 
 	'data': {
+		'buscar_tpg': '',
 		'tpgs': [],
 		'tpg': {
 			'descripcion': ''
@@ -25,6 +27,7 @@ var up = new Vue({
 		'offset': 5,
 		'errores': {}
 	},
+
 	'computed': {
 
 		'isActived': function () {
@@ -50,6 +53,10 @@ var up = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+
+        'searchTPG': function () {
+        	return this.tpgs.filter((tpg) => tpg.descripcion.includes(this.buscar_tpg));
         }
     },
 
@@ -72,9 +79,9 @@ var up = new Vue({
 			if(this.validar_tpg(this.tpg)) {
 				axios.post(url, this.tpg)
 				.then(response => {
-					this.modal_success(response.data);
+					modal(response.data, 'success');
 					$("#agregar_tpg").modal('hide');
-					this.obtener_ups(this.pagination.current_page);
+					this.obtener_tpgs(this.pagination.current_page);
 					this.up.descripcion = '';
 				})
 				.catch(error => {
@@ -100,13 +107,13 @@ var up = new Vue({
             }).then((result) => {
                 if (result.value) {
                 	axios.delete(url).then(response => {
-                		this.modal_success(response.data)
+                		modal(response.data, 'success')
                 		this.obtener_tpgs(this.pagination.current_page);
                 	}).catch(error => {
-                		this.modal_error("Error");
+                		modal("Error", 'error');
 					});
                 } else if (result.dismiss === 'cancel') {
-                    this.modal_error("Operacion cancelada")
+                    modal("Operacion cancelada", 'error')
                 }
             })
 		},
@@ -122,10 +129,10 @@ var up = new Vue({
 			if(this.validar_tpg(tpg)){
 				axios.put(url, tpg).then(response => {
 					$("#editar_tpg").modal('hide');
-					this.modal_success(response.data);
+					modal(response.data, 'success');
 					this.obtener_tpgs(this.pagination.current_page);
 				}).catch(error => {
-					this.modal_error(error.data);
+					modal(error.data, 'error');
 				});
 			}
 		},
@@ -142,47 +149,5 @@ var up = new Vue({
 			return true;
 		},
 
-		modal_success: function(title) {
-			swal({
-				title: title,
-				type: 'success',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: true,
-				timer: 1500
-			})
-		},
-
-		modal_error: function(title){
-			swal({
-				title: title,
-				type: 'error',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: false,
-				timer: 1500
-			});
-		},
-
-		modal_info: function(title, text) {
-			swal({
-				title: title,
-				text:  text,
-				type: 'info',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusconfirm: false,
-				timer: 1500
-			});
-		},
-
-		errors: function (message) {
-			swal({
-				type: error,
-				showconfirmbutton: false,
-				timer: 1500,
-				toast: true
-			});
-		}
 	}
 })

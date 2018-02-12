@@ -6,9 +6,9 @@
 		</tr>
 	</thead>
 	<tbody class="well well-sm">
-		<tr v-for="tpg in tpgs">
+		<tr v-for="tpg in searchTPG">
 			<td>@{{tpg.id}}</td>
-			<td>@{{tpg.descripcion}}</td>
+			<td style="width: 800px">@{{tpg.descripcion}}</td>
 			<td>
 				<div class="btn-group btn-group-sm " role="group">
 					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Escuela"@click="editar_tpg(tpg)">Editar

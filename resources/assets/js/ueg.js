@@ -5,6 +5,7 @@ var ueg = new Vue({
 		this.obtener_uegs(this.pagination.current_page);
 	},
 	'data': {
+		'buscar_ueg': '',
 		'urs': [],
 		'uegs': [],
 		'ueg': {
@@ -54,6 +55,9 @@ var ueg = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+        'searchUEG': function () {
+        	return this.uegs.filter((ueg) => ueg.id.includes(this.buscar_ueg));
         }
     },
 	'methods':{
@@ -98,7 +102,7 @@ var ueg = new Vue({
 			let url = 'ueg/' + ueg.id;
 			$('#editar_ueg').modal('hide');
 			axios.put(url, ueg).then(response => {
-				this.modal_success(response.data);
+				modal(response.data, 'success');
 				this.obtener_uegs(this.pagination.current_page);
 			}).catch(error => console.log("erorr"));
 		},
@@ -112,63 +116,35 @@ var ueg = new Vue({
 			axios.get(url).then(response => {
 				this.pagination = response.data.pagination;
 				this.uegs = response.data.data.data;
-			}).catch(error => console.log("Error"));
+			})
 		},
 
 		'obtener_urs': function() {
 			let url = 'ur/urs_all';
-			axios.get(url).then(response => {
-				this.urs = response.data;
-			}).catch(erro => {
-				console.log(error.data);
-			});
+			axios.get(url).then(response => this.urs = response.data);
 		},
 
 		'validar_ueg': function(ueg) {
 			if(ueg.id == '') {
-				this.modal_info('Ingrese una clave');
+				modal('Ingrese una clave', 'info');
 				return false;
 			} else if (ueg.id.length != 5){
-				this.modal_info('La clave debe ser de 5 digitos');
+				modal('La clave debe ser de 5 digitos', 'info');
 				return false;
 			}
 			if(ueg.descripcion == '') {
-				this.modal_info('Ingrese una descripcion');
+				modal('Ingrese una descripcion', 'info');
 				return false;
 			}
 			if(ueg.año == '') {
-				this.modal_info('Ingrese un año');
+				modal_info('Ingrese un año', 'info');
 				return false;
 			}
 			if(ueg.ur_id == ''){
-				this.modal_info('Ingrese la unidad responsable');
+				modal('Ingrese la unidad responsable', 'info');
 				return false;	
 			}
 			return true;
 		},
-
-		modal_success: function(title) {
-            swal({
-                title: title,
-                type: 'success',
-                showCloseButton: false,
-                showConfirmButton: false,
-                focusConfirm: false,
-                timer: 1500
-            })
-        },
-
-        modal_info: function(title, text) {
-			swal({
-				title: title,
-				text:  text,
-				type: 'info',
-				showclosebutton: false,
-				showconfirmbutton: false,
-				focusconfirm: false,
-				timer: 1500
-			});
-		},
-
 	}
 });

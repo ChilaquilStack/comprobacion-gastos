@@ -8,6 +8,10 @@ use App\Http\Requests\URRequest;
 
 class URController extends Controller {
     
+    public function __construct(){
+        $this->middleware('auth');
+    }
+    
     public function index() {
         return view('ur.index');
     }
@@ -19,7 +23,7 @@ class URController extends Controller {
 
     public function store(URRequest $request) {
         UR::create($request->all());
-        return response()->json("Unudad Responsable creada con exito", 200);
+        return response()->json("Unidad Responsable creada con exito", 200);
     }
 
     

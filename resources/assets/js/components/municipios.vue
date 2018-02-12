@@ -1,7 +1,8 @@
-const municipios = new Vue({
+<template>
 	
-    'el': '#municipios',
-	
+</template>
+
+<script>
 	'created': function() {
 		this.obtener_municipios(this.pagination.current_page);
         this.obtener_regiones();
@@ -157,4 +158,4 @@ const municipios = new Vue({
             this.obtener_municipios(page);
         },
     }
-})
+</script>

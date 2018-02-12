@@ -6,6 +6,7 @@ var up = new Vue({
 	},
 
 	'data': {
+		'buscar_up': '',
 		'ups': [],
 		'up': {
 			'id': '',
@@ -52,6 +53,10 @@ var up = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+
+        'searchUp': function () {
+        	return this.ups.filter((up) => up.id.includes(this.buscar_up));
         }
     },
 
@@ -62,7 +67,7 @@ var up = new Vue({
 			axios('up/ups').then(response => {
 				this.pagination = response.data.pagination;
 				this.ups = response.data.data.data;
-			});
+			})
 		},
 
 		'agregar_up': function(){
@@ -154,48 +159,5 @@ var up = new Vue({
 			} 
 			return true;
 		},
-
-		modal_success: function(title) {
-			swal({
-				title: title,
-				type: 'success',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: true,
-				timer: 1500
-			})
-		},
-
-		modal_error: function(title){
-			swal({
-				title: title,
-				type: 'error',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: false,
-				timer: 1500
-			});
-		},
-
-		modal_info: function(title, text) {
-			swal({
-				title: title,
-				text:  text,
-				type: 'info',
-				showclosebutton: false,
-				showconfirmbutton: false,
-				focusconfirm: false,
-				timer: 1500
-			});
-		},
-
-		errors: function (message) {
-			swal({
-				type: error,
-				showconfirmbutton: false,
-				timer: 1500,
-				toast: true
-			});
-		}
 	}
 })

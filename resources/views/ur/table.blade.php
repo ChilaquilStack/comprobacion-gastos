@@ -1,4 +1,4 @@
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-condensed table-striped" v-if="urs.length > 0">
 	<thead>
 		<tr>
 			<th>Clave</th>
@@ -9,16 +9,10 @@
 	</thead>
 	<tbody class="well well-sm">
 			
-		<tr v-for="ur in urs">
-			<td>
-				@{{ur.id}}
-			</td>
-			<td>
-				@{{ur.up_id}}
-			</td>
-			<td>
-				@{{ur.descripcion}}
-			</td>
+		<tr v-for="ur in searchUR">
+			<td>@{{ur.id}}</td>
+			<td>@{{ur.up_id}}</td>
+			<td>@{{ur.descripcion}}</td>
 			<td>
 				@{{ur.año}}
 			</td>

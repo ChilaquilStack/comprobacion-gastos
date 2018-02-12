@@ -1,4 +1,4 @@
-<table class="table table-hover table-condensed">
+<table class="table table-hover table-condensed" v-if="ups.length > 0">
 	<thead>
 		<tr>
 			<th>Clave</th>
@@ -8,16 +8,10 @@
 	</thead>
 	<tbody class="well well-sm">
 			
-		<tr v-for="up in ups">
-			<td>
-				@{{up.id}}
-			</td>
-			<td>
-				@{{up.descripcion}}
-			</td>
-			<td>
-				@{{up.año}}
-			</td>
+		<tr v-for="up in searchUp">
+			<td>@{{up.id}}</td>
+			<td>@{{up.descripcion}}</td>
+			<td>@{{up.año}}</td>
 			<td>
 				<div class="btn-group btn-group-sm " role="group">
 					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Unidad Presupuestal"@click="editar_up(up)">Editar

@@ -1,4 +1,4 @@
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-condensed table-striped" v-if="uegs.length > 0">
 	<thead>
 		<tr>
 			<th>Clave</th>
@@ -10,22 +10,12 @@
 	</thead>
 	<tbody class="well well-sm">
 			
-		<tr v-for="ueg in uegs">
-			<td>
-				@{{ueg.id}}
-			</td>
-			<td>
-				@{{ueg.ur.id}}
-			</td>
-			<td>
-				@{{ueg.ur.up.id}}
-			</td>
-			<td>
-				@{{ueg.descripcion}}
-			</td>
-			<td>
-				@{{ueg.año}}
-			</td>
+		<tr v-for="ueg in searchUEG">
+			<td>@{{ueg.id}}</td>
+			<td>@{{ueg.ur.id}}</td>
+			<td>@{{ueg.ur.up.id}}</td>
+			<td>@{{ueg.descripcion}}</td>
+			<td>@{{ueg.año}}</td>
 			<td>
 				<div class="btn-group btn-group-sm " role="group">
 					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Unidad Responsable"@click="editar_ueg(ueg)">Editar

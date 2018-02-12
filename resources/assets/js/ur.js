@@ -1,12 +1,16 @@
 "use strict";
 
 var up = new Vue({
+	
 	'el': '#ur',
+	
 	'created': function(){
 		this.obtener_ups();
 		this.obtener_urs(this.pagination.current_page);
 	},
+
 	'data': {
+		'ur_buscar': '',
 		'urs': [],
 		'ups': [],
 		'ur': {
@@ -31,10 +35,13 @@ var up = new Vue({
 		'offset': 5,
 		'errores': {}
 	},
+
 	'computed': {
+		
 		'isActived': function () {
 			return this.pagination.current_page;
         },
+
         'pagesNumber': function () {
         	let from = this.pagination.current_page - this.offset;
             let to = from + (this.offset * 2);
@@ -54,8 +61,12 @@ var up = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+        'searchUR': function () {
+        	return this.urs.filter((ur) => ur.id.includes(this.ur_buscar));
         }
     },
+
 	'methods':{
 
 		'agregar_ur': function() {
@@ -129,7 +140,7 @@ var up = new Vue({
 		},
 
 		'obtener_ups': function() {
-			axios('up/ups_all').then(response => this.ups = response.data).catch(error => console.log("Error"));
+			axios('up/ups_all').then(response => this.ups = response.data);
 		},
 
 		'obtener_urs': function(page) {
@@ -137,7 +148,7 @@ var up = new Vue({
 			axios(url).then(response => {
 				this.pagination = response.data.pagination;
 				this.urs = response.data.data.data
-			}).catch(error => console.log('Error'));
+			})
 		},
 
 		'validar_ur': function(ur) {

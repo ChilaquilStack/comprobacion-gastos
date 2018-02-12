@@ -8,6 +8,10 @@ use App\Http\Requests\UEGRequest;
 
 class UEGController extends Controller {
 
+    public function __construct(){
+        $this->middleware('auth');
+    }
+    
     public function index() {
         return view('ueg.index');
     }
@@ -46,9 +50,9 @@ class UEGController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy(UEG $ueg) {
-        $ueg->estataus = 1;
+        $ueg->estatus = 0;
         $ueg->save();
-        return response()->json("Se elimino correctament", 200);
+        return response()->json("Se elimino correctamente", 200);
     }
 
     public function uegs(){

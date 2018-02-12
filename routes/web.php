@@ -1,5 +1,4 @@
 <?php
-
 Route::get('/', function () {
     return view('index');
 });
@@ -30,3 +29,8 @@ Route::resource('ueg', 'UEGController');
 
 Route::get('tpg/tpgs', 'TPGController@tpgs');
 Route::resource('tpg', 'TPGController');
+
+Route::resource('usuario', 'UsuarioController');
+
+Route::match(['get','post'], 'login', 'Auth\LoginController@authenticate')->name('login');
+Route::get('logout', 'Auth\LoginController@logout')->name('logout');

@@ -1,4 +1,4 @@
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-condensed table-striped" v-if="searchMunicipio.length > 0">
 	<thead>
 		<tr>
 			<th>#</th>
@@ -7,17 +7,10 @@
 		</tr>
 	</thead>
 	<tbody class="well well-sm">
-			
-		<tr v-for="municipio in municipios">
-			<td>
-				@{{municipio.id}}
-			</td>
-			<td>
-				@{{municipio.nombre}}
-			</td>
-			<td>
-				@{{municipio.region.nombre}}
-			</td>
+		<tr v-for="municipio in searchMunicipio">
+			<td>@{{municipio.id}}</td>
+			<td>@{{municipio.nombre}}</td>
+			<td>@{{municipio.region.nombre}}</td>
 			<td>
 				<div class="btn-group btn-group-sm " role="group">
 					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Municipio"@click="editar_municipio(municipio)">Editar
@@ -31,4 +24,3 @@
 		</tr>
 	</tbody>
 </table>
-@include('layouts.paginator')

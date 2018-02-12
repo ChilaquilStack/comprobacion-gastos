@@ -9,10 +9,16 @@
 			<button class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="left" title="Agregar Unidad Responsable" @click="mostrar_formulario_agregar_ur">
 				<i class="fa fa-plus"></i>
 			</button>
+			<input type="text" v-model="ur_buscar" class="form-control" placeholder="Buscar...">
 		</h1>
-	</div>
-	<div class="col-lg-12">
+
+		<div class="jumbotron alert alert-warning" v-if='urs.length == 0'>
+			<p>Aun no existen Unidades Responsables</p>
+		</div>
+
 		@include('ur.table')
 	</div>
+
+	
 </div>
 @endsection

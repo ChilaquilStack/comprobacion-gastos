@@ -9,6 +9,7 @@
 
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="nav navbar-nav">
+                @auth
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Configuracion<span class="caret"></span>
                     </a>
@@ -35,20 +36,25 @@
                 </li>
                 <li><a>Operacion Central</a></li>
                 <li><a>Operacion Usuario</a></li>
+                @endauth
             </ul>
             
             <ul class="nav navbar-nav navbar-right">
-                <a class="navbar-brand">
-                    <img src="{{asset('img/user.png')}}" alt="logo" class="img-circle" style="width: 30px; height: 30px">
-                </a>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Juan Perez<span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                        <li><a href="#">Salir</a></li>
-                        <li><a href="#">Ver perfil</a></li>
-                    </ul>
-                </li>
-                <li class="dropdown">
+                @guest
+                    <li><a href="#" @click="login">Login</a></li>
+                    <li><a href="#" @click="register">Register</a></li>
+                @else
+                    <a class="navbar-brand">
+                        <img src="{{asset('img/user.png')}}" alt="logo" class="img-circle" style="width: 30px; height: 30px">
+                    </a>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{Auth::user()->nombre.' '.Auth::user()->apellido_paterno}}<span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{route('logout')}}">Salir</a></li>
+                            <li><a href="#">Ver perfil</a></li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
                     <a href="#" id="año" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@{{año_actual}}
                         <span class="caret"></span>
                     </a>
@@ -58,6 +64,7 @@
                         </li>
                     </ul>
                 </li>
+                @endguest
             </ul>
         </div>
     </div>

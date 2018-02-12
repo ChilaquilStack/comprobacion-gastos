@@ -9,6 +9,7 @@
 				<button class="btn btn-success btn-sm" @click="agregar">
 					<i class="fa fa-plus"></i>
 				</button>
+				<input type="text" v-model="buscar_tpg" class="form-control" placeholder="Buscar...">
 			</h1>
 			@include('tpg.table') 
 		</div>

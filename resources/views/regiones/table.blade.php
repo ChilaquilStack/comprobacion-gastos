@@ -1,4 +1,5 @@
-<table class="table table-hover table-condensed">
+
+<table class="table table-hover table-condensed" v-if='searchRegion.length > 0'>
 	<thead>
 		<tr>
 			<th>#</th>
@@ -7,13 +8,9 @@
 	</thead>
 	<tbody class="well well-sm">
 			
-		<tr v-for="region in regiones">
-			<td>
-				@{{region.id}}
-			</td>
-			<td>
-				@{{region.nombre}}
-			</td>
+		<tr v-for="region in searchRegion">
+			<td>@{{region.id}}</td>
+			<td>@{{region.nombre}}</td>
 			<td>
 				<div class="btn-group btn-group-sm " role="group">
 					<button class="btn btn-warning" data-toggle="tooltip" data-placement="top" title="Editar Region"@click="editar_region(region)">Editar

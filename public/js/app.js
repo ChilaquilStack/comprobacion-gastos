@@ -1935,41 +1935,48 @@ return sweetAlert$1;
 })));
 if (typeof window !== 'undefined' && window.Sweetalert2) window.sweetAlert = window.swal = window.Sweetalert2;
 
-const app = new Vue({
+var modal = (title, type) => {
+	swal({
+		'title': title,
+		'type': type,
+		'showCloseButton': false,
+        'showConfirmButton': false,
+        'focusConfirm': false,
+        'timer': 1500
+    });
+};
+const municipios = new Vue({
 	
-    el: '#municipios',
+    'el': '#municipios',
 	
-	created: function() {
+	'created': function() {
 		this.obtener_municipios(this.pagination.current_page);
         this.obtener_regiones();
 	},
     
-	data: {
-		old_municipio: {
-			'id': '',
-			'nombre': ''
-		},
-        municipio: {
-            nombre: '',
-            regiones_id: ''
+	'data': {
+		'old_municipio': { 'id': '','nombre': ''},
+        'buscar_municipio':'',
+        'municipio': {'nombre': '', 'regiones_id': ''},
+        'municipios': [],
+        'regiones': [],
+        'pagination': {
+            'total': 0, 
+            'per_page': 2,
+            'from': 1,
+            'to': 0,
+            'current_page': 1
         },
-        municipios: [],
-        regiones: [],
-        pagination: {
-            total: 0, 
-            per_page: 2,
-            from: 1,
-            to: 0,
-            current_page: 1
-        },
-        offset: 5,
+        'offset': 5,
 	},
         
-    computed: {
-        isActived: function () {
+    'computed': {
+        
+        'isActived': function () {
             return this.pagination.current_page;
         },
-        pagesNumber: function () {
+        
+        'pagesNumber': function () {
             let from = this.pagination.current_page - this.offset;
             let to = from + (this.offset * 2);
             let pagesArray = [];
@@ -1988,47 +1995,52 @@ const app = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+
+        'searchMunicipio': function() {
+            return this.municipios.filter((municipio) => municipio.nombre.includes(this.buscar_municipio));
         }
+        
     },
     
-    methods: {
+    'methods': {
     
-        mostrar_formulario_agregar_municipio: function(){
+        'mostrar_formulario_agregar_municipio': function(){
             $("#agregar_municipio").modal();
         },
 
-        agregar_municipio: function() {
+        'agregar_municipio': function() {
             if(this.validar_municipio(this.municipio)) {
                 let url = 'municipio';
                 axios.post(url, this.municipio)
                 .then(response => { 
-                    this.modal_success(response.data);
+                    modal(response.data, 'success');
                     this.obtener_municipios();
                     this.municipio.nombre = "";
                     this.municipio.regiones_id = "";
                     $("#agregar_municipio").modal('hide');
                 }).catch(error => {
-                    this.modal_error(error.data);
+                    modal_(error.data, 'error');
                 });
             }
         },
 
-        validar_municipio: function(municipio) {
+        'validar_municipio': function(municipio) {
             if(municipio.nombre == '') {
-                this.modal_info("Ingrese el nombre del municipio");
+                modal("Ingrese el nombre del municipio", 'info');
                 return false;
             }
             if(municipio.regiones_id == '') {
-                this.modal_info("Ingrese la region a la que pertenece el municipio de " + municipio.nombre);
+                modal('Ingrese la region a la que pertenece el municipio de ' + municipio.nombre, 'info');
                 return false;
             }
             return true;
         },
         
-        eliminar_municipio: function(municipio) {
+        'eliminar_municipio': function(municipio) {
+            let url = 'municipio/' + municipio.id;
             swal({
-                title: 'Esta seguro?',
-                text: "Los elementos seran eliminados",
+                title: 'Esta Seguro?',
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -2041,56 +2053,49 @@ const app = new Vue({
                 reverseButtons: true
             }).then((result) => {
                 if (result.value) {
-                    let url = 'municipio/' + municipio.id;
-                    axios.delete(url)
-                    .then(response => {     
-                        this.modal_success("Eliminado", "Municipio Eliminado");
+                    axios.delete(url).then(response => {
+                        modal("Eliminado", "success");
                         this.obtener_municipios(this.pagination.current_page);
-                    }).catch(error => {
-                        console.log("Error")
-                    });
+                    }).catch(error => modal('Error', 'error'));
                 } else if (result.dismiss === 'cancel') {
-                    this.modal_error("Cancelado", "No se a eliminado")
+                    modal('Errror', 'errror');
                 }
             })
         },
 
-        obtener_municipios: function(page) {
+        'obtener_municipios': function(page) {
             let url = 'municipio/municipios?page='+page;
-            axios.get(url)
-            .then(response => {
+            axios.get(url).then(response => {
                 this.pagination = response.data.pagination;
                 this.municipios = response.data.data.data;
-            }).catch(error => {
-                console.info(error);
             });
         },
 
-        obtener_regiones: function() {
+        'obtener_regiones': function() {
             let url = 'region/regiones_all';
-            axios.get(url).then(response => this.regiones = response.data).catch(errror => console.log("error"));
+            axios.get(url).then(response => this.regiones = response.data);
         },
 
-        editar_municipio: function(municipio) {
+        'editar_municipio': function(municipio) {
             this.old_municipio.id = municipio.id
             this.old_municipio.nombre = municipio.nombre;
             $("#editar_municipio").modal();
         },
 
-        actualizar_municipio: function(municipio) {
+        'actualizar_municipio': function(municipio) {
             if(municipio.nombre != '') {
                 let url = 'municipio/' + municipio.id;
                 axios.put(url, {'nombre': municipio.nombre})
                     .then(response => {
                         this.obtener_municipios(this.pagination.current_page);
                         $("#editar_municipio").modal('hide');
-                        this.modal_success(response.data);
+                        modal(response.data, 'success');
                 })
                     .catch(error => {
-                        console.log(error.response);
+                        modal(error.data, 'error')
                 });
             } else {
-                this.modal_info("Alerta", "Porfavor ingrese el nombre del municipio");
+                modal("Alerta", "Porfavor ingrese el nombre del municipio", 'info');
             }
         },
 
@@ -2098,92 +2103,43 @@ const app = new Vue({
             this.pagination.current_page = page;
             this.obtener_municipios(page);
         },
-        
-        modal_success: function(title) {
-            swal({
-                title: title,
-                type: 'success',
-                showCloseButton: false,
-                showConfirmButton: false,
-                focusConfirm: false,
-                timer: 1500
-            })
-        },
-
-        modal_error: function(title, text){
-            swal({
-                title: title,
-                text:  text,
-                type: 'error',
-                showCloseButton: false,
-                showConfirmButton: false,
-                focusConfirm: false,
-                timer: 1500
-            });
-        },
-
-        modal_info: function(title, text) {
-            swal({
-                title: title,
-                text:  text,
-                type: 'info',
-                showCloseButton: false,
-                showConfirmButton: false,
-                focusConfirm: false,
-                timer: 1500
-            });
-        },
-
-        modal_warning: function(title, text, index) {
-            swal({
-                title: title,
-                text: text,
-                type: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Si, eliminar!',
-                cancelButtonText: 'No, cancelar!',
-                confirmButtonClass: 'btn btn-success',
-                cancelButtonClass: 'btn btn-danger',
-                buttonsStyling: false,
-                reverseButtons: true
-            }).then((result) => {
-                if (result.value) {
-                    this.modal_success("Eliminado", "Municipio Eliminado");
-                    this.municipios.splice(index, 1);
-                } else if (result.dismiss === 'cancel') {
-                    this.modal_error("Cancelado", "No se a eliminado")
-                }
-            })
-        }
     }
 })
 "use strict";
 Vue.config.devtools = true
 var CRUD_regiones = new Vue({
-	el: "#regiones",
-	created: function() {
+
+	'el': "#regiones",
+	
+	'created': function() {
 		this.obtener_regiones(this.pagination.current_page);
 	},
-	data: {
-		old_region: {id: '', nombre: ''},
-		region: {nombre: ""},
-		regiones: [],
-		pagination: {
-			total: 0, 
-			per_page: 2,
-			from: 1,
-			to: 0,
-			current_page: 1
+
+	'data': {
+		'buscar_region': '',
+		'old_region': {id: '', nombre: ''},
+		'region': {nombre: ""},
+		'regiones': [],
+		'pagination': {
+			'total': 0, 
+			'per_page': 2,
+			'from': 1,
+			'to': 0,
+			'current_page': 1
 		},
-		offset: 5,
+		'offset': 5,
+		'errors': {
+			'region': []
+		}
 	},
-	computed: {
-		isActived: function () {
+
+	'computed': {
+		
+		'isActived': function () {
 			return this.pagination.current_page;
         },
-        pagesNumber: function () {
+
+        'pagesNumber': function () {
         	let from = this.pagination.current_page - this.offset;
             let to = from + (this.offset * 2);
             let pagesArray = [];
@@ -2202,33 +2158,41 @@ var CRUD_regiones = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+
+        'searchRegion': function () {
+        	return this.regiones.filter((region) => region.nombre.includes(this.buscar_region));
         }
     },
-	methods: {
+	
+	'methods': {
 		
-		mostrar_formulario_agregar_region: function(){
+		'mostrar_formulario_agregar_region': function(){
 			$("#agregar_region").modal();
 		},
 
-		agregar_region: function() {
-			if(this.region.nombre != ''){
+		'agregar_region': function() {
+			if(this.validar_region(this.region)){
 				let url = 'region';
 				axios.post(url, this.region).then(response => {
-					this.modal_success(response.data);
+					modal(response.data, 'success');
 					this.obtener_regiones();
 					this.region.nombre = "";
 					$("#agregar_region").modal('hide');
 				}).catch(error => {
-					console.log("Error");
+					modal('Error', 'error')
 				});
-			} else {
-				if(this.new_region.nombre == ''){
-					this.modal_info("Ingrese el nombre de la region");
-				}
+			} 
+		},
+
+		'validar_region': function (region){
+			if(region.nombre == ''){
+				this.errors.region[0] = 'Ingrese un nombre para la region';
+				return false
 			}
 		},
 		
-		eliminar_region: function(region) {
+		'eliminar_region': function(region) {
 			swal({
 				title: 'Esta seguro?',
 				text: "Los elementos seran eliminados",
@@ -2247,109 +2211,48 @@ var CRUD_regiones = new Vue({
 					let url = 'region/' + region.id;
 					axios.delete(url)
 					.then(response => {
+						modal(response.data, 'success');
 						this.obtener_regiones(this.pagination.current_page);
 					}).catch(error => {
-						console.log("Error")
+						modal('Error', 'error');
 					});
 				} else if (result.dismiss === 'cancel') {
-					this.modal_error("Cancelado", "No se a eliminado")
+					modal("Cancelado", 'error')
 				}
 			})
 		},
 
-		obtener_regiones: function(page) {
+		'obtener_regiones': function(page) {
 			let url = 'region/regiones?page='+page;
 			axios.get(url)
 			.then(response => {
 				this.pagination = response.data.pagination;
 				this.regiones = response.data.data.data;
-			}).catch(error => {
-				console.info(error);
-			});
+			})
 		},
 
-		editar_region: function(region) {
+		'editar_region': function(region) {
 			this.old_region.id = region.id
 			this.old_region.nombre = region.nombre;
 			$("#editar_region").modal();
 		},
 
-		actualizar_region: function(region){
+		'actualizar_region': function(region){
 			if(region.nombre != ''){
 				let url = 'region/' + region.id;
 				axios.put(url, this.old_region)
 					.then(response => {
 						this.obtener_regiones(this.pagination.current_page);
 						$("#editar_region").modal('hide');
-						this.modal_success(response.data);
+						modal(response.data, 'success');
 				})
-					.catch(error => {
-						console.log(error.response);
-				});
+					.catch(error => console.log('Error', error));
 			}
 		},
 
-		changePage: function (page) {
+		'changePage': function (page) {
 			this.pagination.current_page = page;
       	},
-
-		modal_success: function(title) {
-			swal({
-				title: title,
-				type: 'success',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: false,
-				timer: 1500
-			})
-		},
-
-		modal_error: function(title, text){
-			swal({
-				title: title,
-				text:  text,
-				type: 'error',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: false,
-				timer: 1500
-			});
-		},
-
-		modal_info: function(title, text) {
-			swal({
-				title: title,
-				text:  text,
-				type: 'info',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: false,
-				timer: 1500
-			});
-		},
-
-		modal_warning: function(title, text, index) {
-			swal({
-				title: title,
-				text: text,
-				type: 'warning',
-				showCancelButton: true,
-				confirmButtonColor: '#3085d6',
-				cancelButtonColor: '#d33',
-				confirmButtonText: 'Si, eliminar!',
-				cancelButtonText: 'No, cancelar!',
-				confirmButtonClass: 'btn btn-success',
-				cancelButtonClass: 'btn btn-danger',
-				buttonsStyling: false,
-				reverseButtons: true
-			}).then((result) => {
-				if (result.value) {
-					this.modal_success("Eliminado");
-				} else if (result.dismiss === 'cancel') {
-					this.modal_error("Cancelado", "No se a eliminado")
-				}
-			})
-		}
 	}
 });
 "use strict";
@@ -2586,6 +2489,7 @@ var ueg = new Vue({
 		this.obtener_uegs(this.pagination.current_page);
 	},
 	'data': {
+		'buscar_ueg': '',
 		'urs': [],
 		'uegs': [],
 		'ueg': {
@@ -2635,6 +2539,9 @@ var ueg = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+        'searchUEG': function () {
+        	return this.uegs.filter((ueg) => ueg.id.includes(this.buscar_ueg));
         }
     },
 	'methods':{
@@ -2679,7 +2586,7 @@ var ueg = new Vue({
 			let url = 'ueg/' + ueg.id;
 			$('#editar_ueg').modal('hide');
 			axios.put(url, ueg).then(response => {
-				this.modal_success(response.data);
+				modal(response.data, 'success');
 				this.obtener_uegs(this.pagination.current_page);
 			}).catch(error => console.log("erorr"));
 		},
@@ -2693,75 +2600,51 @@ var ueg = new Vue({
 			axios.get(url).then(response => {
 				this.pagination = response.data.pagination;
 				this.uegs = response.data.data.data;
-			}).catch(error => console.log("Error"));
+			})
 		},
 
 		'obtener_urs': function() {
 			let url = 'ur/urs_all';
-			axios.get(url).then(response => {
-				this.urs = response.data;
-			}).catch(erro => {
-				console.log(error.data);
-			});
+			axios.get(url).then(response => this.urs = response.data);
 		},
 
 		'validar_ueg': function(ueg) {
 			if(ueg.id == '') {
-				this.modal_info('Ingrese una clave');
+				modal('Ingrese una clave', 'info');
 				return false;
 			} else if (ueg.id.length != 5){
-				this.modal_info('La clave debe ser de 5 digitos');
+				modal('La clave debe ser de 5 digitos', 'info');
 				return false;
 			}
 			if(ueg.descripcion == '') {
-				this.modal_info('Ingrese una descripcion');
+				modal('Ingrese una descripcion', 'info');
 				return false;
 			}
 			if(ueg.año == '') {
-				this.modal_info('Ingrese un año');
+				modal_info('Ingrese un año', 'info');
 				return false;
 			}
 			if(ueg.ur_id == ''){
-				this.modal_info('Ingrese la unidad responsable');
+				modal('Ingrese la unidad responsable', 'info');
 				return false;	
 			}
 			return true;
 		},
-
-		modal_success: function(title) {
-            swal({
-                title: title,
-                type: 'success',
-                showCloseButton: false,
-                showConfirmButton: false,
-                focusConfirm: false,
-                timer: 1500
-            })
-        },
-
-        modal_info: function(title, text) {
-			swal({
-				title: title,
-				text:  text,
-				type: 'info',
-				showclosebutton: false,
-				showconfirmbutton: false,
-				focusconfirm: false,
-				timer: 1500
-			});
-		},
-
 	}
 });
 "use strict";
 
 var up = new Vue({
+	
 	'el': '#ur',
+	
 	'created': function(){
 		this.obtener_ups();
 		this.obtener_urs(this.pagination.current_page);
 	},
+
 	'data': {
+		'ur_buscar': '',
 		'urs': [],
 		'ups': [],
 		'ur': {
@@ -2786,10 +2669,13 @@ var up = new Vue({
 		'offset': 5,
 		'errores': {}
 	},
+
 	'computed': {
+		
 		'isActived': function () {
 			return this.pagination.current_page;
         },
+
         'pagesNumber': function () {
         	let from = this.pagination.current_page - this.offset;
             let to = from + (this.offset * 2);
@@ -2809,8 +2695,12 @@ var up = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+        'searchUR': function () {
+        	return this.urs.filter((ur) => ur.id.includes(this.ur_buscar));
         }
     },
+
 	'methods':{
 
 		'agregar_ur': function() {
@@ -2884,7 +2774,7 @@ var up = new Vue({
 		},
 
 		'obtener_ups': function() {
-			axios('up/ups_all').then(response => this.ups = response.data).catch(error => console.log("Error"));
+			axios('up/ups_all').then(response => this.ups = response.data);
 		},
 
 		'obtener_urs': function(page) {
@@ -2892,7 +2782,7 @@ var up = new Vue({
 			axios(url).then(response => {
 				this.pagination = response.data.pagination;
 				this.urs = response.data.data.data
-			}).catch(error => console.log('Error'));
+			})
 		},
 
 		'validar_ur': function(ur) {
@@ -2964,6 +2854,7 @@ var up = new Vue({
 	},
 
 	'data': {
+		'buscar_up': '',
 		'ups': [],
 		'up': {
 			'id': '',
@@ -3010,6 +2901,10 @@ var up = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+
+        'searchUp': function () {
+        	return this.ups.filter((up) => up.id.includes(this.buscar_up));
         }
     },
 
@@ -3020,7 +2915,7 @@ var up = new Vue({
 			axios('up/ups').then(response => {
 				this.pagination = response.data.pagination;
 				this.ups = response.data.data.data;
-			});
+			})
 		},
 
 		'agregar_up': function(){
@@ -3112,49 +3007,6 @@ var up = new Vue({
 			} 
 			return true;
 		},
-
-		modal_success: function(title) {
-			swal({
-				title: title,
-				type: 'success',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: true,
-				timer: 1500
-			})
-		},
-
-		modal_error: function(title){
-			swal({
-				title: title,
-				type: 'error',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: false,
-				timer: 1500
-			});
-		},
-
-		modal_info: function(title, text) {
-			swal({
-				title: title,
-				text:  text,
-				type: 'info',
-				showclosebutton: false,
-				showconfirmbutton: false,
-				focusconfirm: false,
-				timer: 1500
-			});
-		},
-
-		errors: function (message) {
-			swal({
-				type: error,
-				showconfirmbutton: false,
-				timer: 1500,
-				toast: true
-			});
-		}
 	}
 })
 var fecha = new Date();
@@ -3169,6 +3021,12 @@ const navbar = new Vue({
 	'methods': {
 		'changeYear': function (año) {
 			this.año_actual = año;
+		},
+		'login': function () {
+			$("#login").modal();
+		},
+		'register': function () {
+			$("#register").modal();
 		}
 	},
 
@@ -3183,6 +3041,7 @@ const navbar = new Vue({
 	}
 });
 var up = new Vue({
+
 	'el': '#tpg',
 
 	'created': function() {
@@ -3190,6 +3049,7 @@ var up = new Vue({
 	},
 
 	'data': {
+		'buscar_tpg': '',
 		'tpgs': [],
 		'tpg': {
 			'descripcion': ''
@@ -3209,6 +3069,7 @@ var up = new Vue({
 		'offset': 5,
 		'errores': {}
 	},
+
 	'computed': {
 
 		'isActived': function () {
@@ -3234,6 +3095,10 @@ var up = new Vue({
                 from++;
             }
             return pagesArray;
+        },
+
+        'searchTPG': function () {
+        	return this.tpgs.filter((tpg) => tpg.descripcion.includes(this.buscar_tpg));
         }
     },
 
@@ -3256,9 +3121,9 @@ var up = new Vue({
 			if(this.validar_tpg(this.tpg)) {
 				axios.post(url, this.tpg)
 				.then(response => {
-					this.modal_success(response.data);
+					modal(response.data, 'success');
 					$("#agregar_tpg").modal('hide');
-					this.obtener_ups(this.pagination.current_page);
+					this.obtener_tpgs(this.pagination.current_page);
 					this.up.descripcion = '';
 				})
 				.catch(error => {
@@ -3284,13 +3149,13 @@ var up = new Vue({
             }).then((result) => {
                 if (result.value) {
                 	axios.delete(url).then(response => {
-                		this.modal_success(response.data)
+                		modal(response.data, 'success')
                 		this.obtener_tpgs(this.pagination.current_page);
                 	}).catch(error => {
-                		this.modal_error("Error");
+                		modal("Error", 'error');
 					});
                 } else if (result.dismiss === 'cancel') {
-                    this.modal_error("Operacion cancelada")
+                    modal("Operacion cancelada", 'error')
                 }
             })
 		},
@@ -3306,10 +3171,10 @@ var up = new Vue({
 			if(this.validar_tpg(tpg)){
 				axios.put(url, tpg).then(response => {
 					$("#editar_tpg").modal('hide');
-					this.modal_success(response.data);
+					modal(response.data, 'success');
 					this.obtener_tpgs(this.pagination.current_page);
 				}).catch(error => {
-					this.modal_error(error.data);
+					modal(error.data, 'error');
 				});
 			}
 		},
@@ -3326,47 +3191,33 @@ var up = new Vue({
 			return true;
 		},
 
-		modal_success: function(title) {
-			swal({
-				title: title,
-				type: 'success',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: true,
-				timer: 1500
-			})
-		},
-
-		modal_error: function(title){
-			swal({
-				title: title,
-				type: 'error',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusConfirm: false,
-				timer: 1500
-			});
-		},
-
-		modal_info: function(title, text) {
-			swal({
-				title: title,
-				text:  text,
-				type: 'info',
-				showCloseButton: false,
-				showConfirmButton: false,
-				focusconfirm: false,
-				timer: 1500
-			});
-		},
-
-		errors: function (message) {
-			swal({
-				type: error,
-				showconfirmbutton: false,
-				timer: 1500,
-				toast: true
-			});
-		}
 	}
 })
+new Vue({
+
+	'el': '#register',
+	
+	'data': {
+
+		'usuario': {'nombre': '', 'apellido_paterno': '', 'apellido_materno': '', 'email': '', 'password': '', 'password_confirmation': ''},
+		'errors': []
+
+	},
+	'methods': {
+
+		'register': function () {
+			axios.post('usuario', this.usuario).then(response => {
+				$("#register").modal('hide');
+				this.usuario.nombre = '';
+				this.usuario.apellido_paterno = '';
+				this.usuario.apellido_materno = '';
+				this.usuario.email = '';
+				this.usuario.password = '';
+				this.usuario.password_confirmation = '';
+				this.errors = [];
+				modal(response.data, 'success');
+			}).catch(error => this.errors = error.response.data.errors);
+		}
+
+	}
+});

@@ -10,6 +10,9 @@
                 
                     {{Form::label("nombre","Nombre",["class"=>"control-label"])}}
                     {{Form::text("nombre","",["class" => "form-control", "v-model" => "region.nombre", "autofocus"])}}
+                    <span class="help-block" v-if="errors.region.length > 0" style="color: red">
+                        <strong>@{{errors.region[0]}}</strong>
+                    </span>
                     
                 {{Form::close()}}
             </div>

@@ -10,12 +10,13 @@
 				<button class="btn btn-success btn-sm" data-toggle="tooltip" data-placement="top" title="Agregar Region" @click="mostrar_formulario_agregar_region">
 					<i class="fa fa-plus"></i>
 				</button>
+				<input type="text" name="buscar_rergion" v-model="buscar_region" class="form-control" placeholder="Buscar...">
 			</h1>
-			<div class="row">
-				<div class="col-lg-12">
-					@include('regiones.table')
-				</div>
+			
+			<div class="jumbotron alert alert-warning" v-if='regiones.length == 0'>
+				<p>Aun no existen regiones</p>
 			</div>
+			@include('regiones.table')
 		</div>
 	</div>
 @endsection

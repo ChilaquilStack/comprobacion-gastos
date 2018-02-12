@@ -10,6 +10,12 @@ const navbar = new Vue({
 	'methods': {
 		'changeYear': function (año) {
 			this.año_actual = año;
+		},
+		'login': function () {
+			$("#login").modal();
+		},
+		'register': function () {
+			$("#register").modal();
 		}
 	},
 
